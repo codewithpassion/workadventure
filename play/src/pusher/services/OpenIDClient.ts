@@ -132,6 +132,7 @@ class OpenIDClient {
         const cookies = req.cookies;
 
         if (typeof cookies?.code_verifier !== "string") {
+            console.error("code_verifier cookie is not a string", cookies);
             throw new Error("code verifier doesn't exist");
         }
 
