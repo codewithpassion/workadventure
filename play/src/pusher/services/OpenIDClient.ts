@@ -158,6 +158,8 @@ class OpenIDClient {
 
             return client.callback(OPID_CLIENT_REDIRECT_URL, params, checks).then((tokenSet) => {
                 console.log("Token set received for OpenIDClient:", tokenSet);
+                console.log("Play URI for OpenIDClient:", playUri);
+
                 res.clearCookie("code_verifier");
                 res.clearCookie("oidc_state");
 
