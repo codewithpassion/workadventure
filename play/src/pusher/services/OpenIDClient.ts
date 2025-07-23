@@ -136,9 +136,11 @@ class OpenIDClient {
             throw new Error("code verifier doesn't exist");
         }
 
+        console.log("Cookies received for OpenIDClient:", cookies);
         const code_verifier = this.decrypt(cookies.code_verifier);
         const state = cookies.oidc_state;
 
+        console.log("State received for OpenIDClient:", state);
         return this.initClient().then((client) => {
             const params = client.callbackParams(fullUrl);
 
@@ -150,7 +152,12 @@ class OpenIDClient {
                 checks.state = state;
             }
 
+            console.log("Callback parameters for OpenIDClient:", params,
+                "URL", OPID_CLIENT_REDIRECT_URL, "Checks", checks
+            );
+
             return client.callback(OPID_CLIENT_REDIRECT_URL, params, checks).then((tokenSet) => {
+                console.log("Token set received for OpenIDClient:", tokenSet);
                 res.clearCookie("code_verifier");
                 res.clearCookie("oidc_state");
 
@@ -172,6 +179,9 @@ class OpenIDClient {
                             matrix_url: res.matrix_url as string | undefined,
                             matrix_identity_provider: res.matrix_identity_provider as string | undefined,
                         };
+                    }).catch((e) => {
+                        console.error("Error fetching user info:", e);
+                        throw new Error("Failed to fetch user info");
                     });
             });
         });
