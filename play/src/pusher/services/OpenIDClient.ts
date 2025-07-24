@@ -13,6 +13,7 @@ import {
     OPID_SCOPE,
     OPID_PROMPT,
     SECRET_KEY,
+
     OPID_TAGS_CLAIM,
 } from "../enums/EnvironmentVariable";
 
@@ -160,34 +161,73 @@ class OpenIDClient {
                 console.log("Token set received for OpenIDClient:", tokenSet);
                 console.log("Play URI for OpenIDClient:", playUri);
 
-                res.clearCookie("code_verifier");
-                res.clearCookie("oidc_state");
+                // res.clearCookie("code_verifier");
+                // res.clearCookie("oidc_state");
 
-                return client
-                    .userinfo(tokenSet
-                        //, {
-                        //params: {
-                        //    playUri,
-                        //},
-                        //    }
-                    )
-                    .then((res) => {
-                        console.log("User info received for OpenIDClient:", res);
-                        return {
-                            ...res,
-                            email: res.email ?? "",
-                            sub: res.sub,
-                            access_token: tokenSet.access_token ?? "",
-                            username: res[OPID_USERNAME_CLAIM] as string,
-                            locale: res[OPID_LOCALE_CLAIM] as string,
-                            tags: res[OPID_TAGS_CLAIM] as string[],
-                            matrix_url: res.matrix_url as string | undefined,
-                            matrix_identity_provider: res.matrix_identity_provider as string | undefined,
-                        };
-                    }).catch((e) => {
-                        console.error("Error fetching user info:", e);
-                        throw new Error("Failed to fetch user info");
-                    });
+                return fetch(`https://${OPID_CLIENT_ISSUER}//oauth/userinfo`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${tokenSet.access_token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(res => {
+                        console.log("Response from userinfo endpoint:", res);
+
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+
+                        return res.json().then(data => {
+
+                            console.log("Data from userinfo endpoint:", data);
+
+                            return {
+                                ...res,
+                                email: data.email ?? "",
+                                sub: data.sub,
+                                access_token: tokenSet.access_token ?? "",
+                                username: data[OPID_USERNAME_CLAIM] as string,
+                                locale: data[OPID_LOCALE_CLAIM] as string,
+                                tags: data[OPID_TAGS_CLAIM] as string[],
+                                matrix_url: data.matrix_url as string | undefined,
+                                matrix_identity_provider: data.matrix_identity_provider as string | undefined,
+                            };
+                        });
+                    }).catch((error) => {
+                        console.error("Error fetching user info from userinfo endpoint:", error);
+                        throw new Error("Failed to fetch user info from userinfo endpoint");
+                    })
+
+
+                // const userInfo: ClerkUserInfo = await response.json();
+                // return userInfo;
+
+                // return client
+                //     .userinfo(tokenSet
+                //         //, {
+                //         //params: {
+                //         //    playUri,
+                //         //},
+                //         //    }
+                //     )
+                //     .then((res) => {
+                //         console.log("User info received for OpenIDClient:", res);
+                //         return {
+                //             ...res,
+                //             email: res.email ?? "",
+                //             sub: res.sub,
+                //             access_token: tokenSet.access_token ?? "",
+                //             username: res[OPID_USERNAME_CLAIM] as string,
+                //             locale: res[OPID_LOCALE_CLAIM] as string,
+                //             tags: res[OPID_TAGS_CLAIM] as string[],
+                //             matrix_url: res.matrix_url as string | undefined,
+                //             matrix_identity_provider: res.matrix_identity_provider as string | undefined,
+                //         };
+                //     }).catch((e) => {
+                //         console.error("Error fetching user info:", e);
+                //         throw new Error("Failed to fetch user info");
+                //     });
             });
         });
     }

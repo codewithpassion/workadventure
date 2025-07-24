@@ -55,8 +55,8 @@ export const OPID_CLIENT_ISSUER = env.OPID_CLIENT_ISSUER || "";
 if (OPID_CLIENT_ID && !PUSHER_URL) {
     throw new Error("Missing PUSHER_URL environment variable.");
 }
-export const OPID_CLIENT_REDIRECT_URL = PUSHER_URL + "/openid-callback";
-export const OPID_CLIENT_REDIRECT_LOGOUT_URL = PUSHER_URL + "/logout-callback";
+export const OPID_CLIENT_REDIRECT_URL = new URL("openid-callback", `${PUSHER_URL}`).toString();
+export const OPID_CLIENT_REDIRECT_LOGOUT_URL = new URL('logout-callback', `${PUSHER_URL}`).toString();
 export const OPID_PROFILE_SCREEN_PROVIDER =
     env.OPID_PROFILE_SCREEN_PROVIDER || (ADMIN_URL ? ADMIN_URL + "/profile" : undefined);
 export const OPID_SCOPE = env.OPID_SCOPE || "openid email profile ";
