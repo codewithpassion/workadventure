@@ -164,7 +164,7 @@ class OpenIDClient {
                 // res.clearCookie("code_verifier");
                 // res.clearCookie("oidc_state");
 
-                return fetch(`https://${OPID_CLIENT_ISSUER}//oauth/userinfo`, {
+                return fetch(`https://${OPID_CLIENT_ISSUER}/oauth/userinfo`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${tokenSet.access_token}`,
@@ -242,9 +242,44 @@ class OpenIDClient {
     }
 
     public checkTokenAuth(token: string): Promise<IntrospectionResponse> {
-        return this.initClient().then((client) => {
-            return client.userinfo(token);
-        });
+        return fetch(`https://${OPID_CLIENT_ISSUER}/oauth/userinfo`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(res => {
+                console.log("Response from userinfo endpoint:", res);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                return res.json().then(data => {
+
+                    console.log("Data from userinfo endpoint:", data);
+
+                    return {
+                        ...res,
+                        email: data.email ?? "",
+                        sub: data.sub,
+                        access_token: tokenSet.access_token ?? "",
+                        username: data[OPID_USERNAME_CLAIM] as string,
+                        locale: data[OPID_LOCALE_CLAIM] as string,
+                        tags: data[OPID_TAGS_CLAIM] as string[],
+                        matrix_url: data.matrix_url as string | undefined,
+                        matrix_identity_provider: data.matrix_identity_provider as string | undefined,
+                    };
+                });
+            }).catch((error) => {
+                console.error("Error fetching user info from userinfo endpoint:", error);
+                throw new Error("Failed to fetch user info from userinfo endpoint");
+            })
+
+        // return this.initClient().then((client) => {
+        //     //return client.userinfo(token);
+        // });
     }
 
     private encrypt(text: string): string {
