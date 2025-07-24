@@ -164,12 +164,15 @@ class OpenIDClient {
                 res.clearCookie("oidc_state");
 
                 return client
-                    .userinfo(tokenSet, {
-                        params: {
-                            playUri,
-                        },
-                    })
+                    .userinfo(tokenSet
+                        //, {
+                        //params: {
+                        //    playUri,
+                        //},
+                        //    }
+                    )
                     .then((res) => {
+                        console.log("User info received for OpenIDClient:", res);
                         return {
                             ...res,
                             email: res.email ?? "",
