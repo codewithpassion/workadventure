@@ -189,7 +189,7 @@ class OpenIDClient {
                                 access_token: tokenSet.access_token ?? "",
                                 username: data[OPID_USERNAME_CLAIM] as string,
                                 locale: data[OPID_LOCALE_CLAIM] as string,
-                                tags: data[OPID_TAGS_CLAIM] as string[],
+                                tags: data[OPID_TAGS_CLAIM].tags as string[],
                                 matrix_url: data.matrix_url as string | undefined,
                                 matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                             };
@@ -270,7 +270,7 @@ class OpenIDClient {
                         access_token: token ?? "",
                         username: data[OPID_USERNAME_CLAIM] as string,
                         locale: data[OPID_LOCALE_CLAIM] as string,
-                        tags: data[OPID_TAGS_CLAIM] as string[],
+                        tags: data[OPID_TAGS_CLAIM].tags as string[],
                         matrix_url: data.matrix_url as string | undefined,
                         matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                     };
