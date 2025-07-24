@@ -183,8 +183,7 @@ class OpenIDClient {
 
                             console.log("Data from userinfo endpoint:", data);
 
-                            return {
-                                ...res,
+                            const result = {
                                 email: data.email ?? "",
                                 sub: data.sub,
                                 access_token: tokenSet.access_token ?? "",
@@ -194,6 +193,8 @@ class OpenIDClient {
                                 matrix_url: data.matrix_url as string | undefined,
                                 matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                             };
+                            console.log("Result from getUserInfo:", result);
+                            return result;
                         });
                     }).catch((error) => {
                         console.error("Error fetching user info from userinfo endpoint:", error);
@@ -262,7 +263,7 @@ class OpenIDClient {
 
                     console.log("Data from userinfo endpoint:", data);
 
-                    return {
+                    const result = {
                         ...res,
                         email: data.email ?? "",
                         sub: data.sub,
@@ -273,6 +274,8 @@ class OpenIDClient {
                         matrix_url: data.matrix_url as string | undefined,
                         matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                     };
+                    console.log("Result from checkTokenAuth:", result);
+                    return result;
                 });
             }).catch((error) => {
                 console.error("Error fetching user info from userinfo endpoint:", error);
