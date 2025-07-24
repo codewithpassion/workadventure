@@ -182,6 +182,12 @@ class OpenIDClient {
                         return res.json().then(data => {
 
                             console.log("Data from userinfo endpoint:", data);
+                            console.log("OPID_TAGS_CLAIM:", OPID_TAGS_CLAIM, data[OPID_TAGS_CLAIM]);
+                            let tags: string[] | undefined;
+                            if (data[OPID_TAGS_CLAIM] && Array.isArray(data[OPID_TAGS_CLAIM].tags)) {
+                                tags = data[OPID_TAGS_CLAIM].tags;
+                            }
+
 
                             const result = {
                                 email: data.email ?? "",
@@ -189,7 +195,7 @@ class OpenIDClient {
                                 access_token: tokenSet.access_token ?? "",
                                 username: data[OPID_USERNAME_CLAIM] as string,
                                 locale: data[OPID_LOCALE_CLAIM] as string,
-                                tags: data[OPID_TAGS_CLAIM].tags as string[],
+                                tags: tags,
                                 matrix_url: data.matrix_url as string | undefined,
                                 matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                             };
@@ -262,6 +268,11 @@ class OpenIDClient {
                 return res.json().then(data => {
 
                     console.log("Data from userinfo endpoint:", data);
+                    console.log("OPID_TAGS_CLAIM:", OPID_TAGS_CLAIM, data[OPID_TAGS_CLAIM]);
+                    let tags: string[] | undefined;
+                    if (data[OPID_TAGS_CLAIM] && Array.isArray(data[OPID_TAGS_CLAIM].tags)) {
+                        tags = data[OPID_TAGS_CLAIM].tags;
+                    }
 
                     const result = {
                         ...res,
@@ -270,7 +281,7 @@ class OpenIDClient {
                         access_token: token ?? "",
                         username: data[OPID_USERNAME_CLAIM] as string,
                         locale: data[OPID_LOCALE_CLAIM] as string,
-                        tags: data[OPID_TAGS_CLAIM].tags as string[],
+                        tags: tags,
                         matrix_url: data.matrix_url as string | undefined,
                         matrix_identity_provider: data.matrix_identity_provider as string | undefined,
                     };
