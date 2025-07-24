@@ -187,6 +187,7 @@ class OpenIDClient {
                             if (data[OPID_TAGS_CLAIM] && Array.isArray(data[OPID_TAGS_CLAIM].tags)) {
                                 tags = data[OPID_TAGS_CLAIM].tags;
                             }
+                            console.log("Tags extracted:", tags);
 
 
                             const result = {
@@ -273,6 +274,7 @@ class OpenIDClient {
                     if (data[OPID_TAGS_CLAIM] && Array.isArray(data[OPID_TAGS_CLAIM].tags)) {
                         tags = data[OPID_TAGS_CLAIM].tags;
                     }
+                    console.log("Tags extracted:", tags);
 
                     const result = {
                         ...res,
