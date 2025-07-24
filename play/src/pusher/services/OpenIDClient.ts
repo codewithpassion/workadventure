@@ -243,7 +243,8 @@ class OpenIDClient {
     }
 
     public checkTokenAuth(token: string): Promise<IntrospectionResponse> {
-        return fetch(`https://${OPID_CLIENT_ISSUER}/oauth/userinfo`, {
+        console.log("Checking token auth with token:", token);
+        return fetch(`${OPID_CLIENT_ISSUER}/oauth/userinfo`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -265,7 +266,7 @@ class OpenIDClient {
                         ...res,
                         email: data.email ?? "",
                         sub: data.sub,
-                        access_token: tokenSet.access_token ?? "",
+                        access_token: token ?? "",
                         username: data[OPID_USERNAME_CLAIM] as string,
                         locale: data[OPID_LOCALE_CLAIM] as string,
                         tags: data[OPID_TAGS_CLAIM] as string[],
