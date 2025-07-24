@@ -163,8 +163,9 @@ class OpenIDClient {
 
                 // res.clearCookie("code_verifier");
                 // res.clearCookie("oidc_state");
-
-                return fetch(`https://${OPID_CLIENT_ISSUER}/oauth/userinfo`, {
+                const url = `${OPID_CLIENT_ISSUER}/oauth/userinfo`;
+                console.log("Fetching user info from:", url);
+                return fetch(url, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${tokenSet.access_token}`,
